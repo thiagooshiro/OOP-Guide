@@ -1,5 +1,9 @@
 export default class ProductCard {
-  constructor(product, onClickHandler) {
+  constructor(product) {
+    // seu código aqui
+  }
+
+  setOnClick(callback) {
     // seu código aqui
   }
 

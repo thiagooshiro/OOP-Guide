@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inheritance in Classes — Demo</title>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      color: #222;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    p.subtitle {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    section {
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #ddd;
+    }
+
+    section h2 {
+      margin-bottom: 0.5rem;
+    }
+
+    section p {
+      color: #555;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      background: #667eea;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #5a6fd6;
+    }
+
+    .demo-area {
+      margin-top: 1rem;
+    }
+
+    /* ─── Card Base ───────────────────────── */
+
+    .card {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    /* ─── Highlighted Card ───────────────── */
+
+    .highlighted-card {
+      background: white;
+      border: 2px solid #667eea;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1rem;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+
+    .highlighted-badge {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+
+    /* ─── Alert ──────────────────────────── */
+
+    .alert {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+
+    .warning-alert {
+      background: #fff7ed;
+      border: 1px solid #fdba74;
+      color: #9a3412;
+    }
+
+    .success-alert {
+      background: #ecfdf5;
+      border: 1px solid #6ee7b7;
+      color: #065f46;
+    }
+
+    /* ─── Modal ──────────────────────────── */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      width: 320px;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: #777;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Inheritance in Classes — Demo</h1>
+
+  <p class="subtitle">
+    Exemplos práticos de herança em classes JavaScript usando componentes visuais.
+  </p>
+
+  <!-- Card -->
+  <section>
+    <h2>Card Base vs HighlightedCard</h2>
+
+    <p>
+      O HighlightedCard herda comportamento do Card, mas modifica o visual.
+    </p>
+
+    <button onclick="renderNormalCard()">Renderizar Card</button>
+    <button onclick="renderHighlightedCard()">Renderizar HighlightedCard</button>
+
+    <div class="demo-area" id="card-demo"></div>
+  </section>
+
+  <!-- Alerts -->
+  <section>
+    <h2>Alerts especializados</h2>
+
+    <p>
+      Classes diferentes reutilizando a mesma estrutura base.
+    </p>
+
+    <button onclick="renderWarning()">WarningAlert</button>
+    <button onclick="renderSuccess()">SuccessAlert</button>
+
+    <div class="demo-area" id="alert-demo"></div>
+  </section>
+
+  <!-- Modal -->
+  <section>
+    <h2>ModalBase vs ProductModal</h2>
+
+    <p>
+      Um modal especializado reutilizando comportamento da classe base.
+    </p>
+
+    <button onclick="productModal.open({
+      title: 'Camiseta',
+      price: 'R$ 49,90'
+    })">
+      Abrir ProductModal
+    </button>
+  </section>
+
+  <script>
+    // ─── Card Base ─────────────────────────
+
+    class Card {
+      constructor(title) {
+        this.title = title;
+      }
+
+      getView() {
+        const element = document.createElement('div');
+
+        element.className = 'card';
+        element.textContent = this.title;
+
+        return element;
+      }
+    }
+
+    class HighlightedCard extends Card {
+      getView() {
+        const element = document.createElement('div');
+
+        element.className = 'highlighted-card';
+
+        element.innerHTML = `
+          <div class="highlighted-badge">
+            Destaque
+          </div>
+
+          <h3>${this.title}</h3>
+
+          <p>Versão destacada do card.</p>
+        `;
+
+        return element;
+      }
+    }
+
+    function renderNormalCard() {
+      const area = document.getElementById('card-demo');
+
+      area.innerHTML = '';
+
+      const card = new Card('Card comum');
+
+      area.appendChild(card.getView());
+    }
+
+    function renderHighlightedCard() {
+      const area = document.getElementById('card-demo');
+
+      area.innerHTML = '';
+
+      const card = new HighlightedCard('Card em destaque');
+
+      area.appendChild(card.getView());
+    }
+
+    // ─── Alerts ────────────────────────────
+
+    class Alert {
+      constructor(message) {
+        this.message = message;
+      }
+
+      getView() {
+        const element = document.createElement('div');
+
+        element.className = 'alert';
+
+        element.textContent = this.message;
+
+        return element;
+      }
+    }
+
+    class WarningAlert extends Alert {
+      getView() {
+        const element = super.getView();
+
+        element.classList.add('warning-alert');
+
+        return element;
+      }
+    }
+
+    class SuccessAlert extends Alert {
+      getView() {
+        const element = super.getView();
+
+        element.classList.add('success-alert');
+
+        return element;
+      }
+    }
+
+    function renderWarning() {
+      const area = document.getElementById('alert-demo');
+
+      area.innerHTML = '';
+
+      const alert = new WarningAlert('Atenção: ação importante.');
+
+      area.appendChild(alert.getView());
+    }
+
+    function renderSuccess() {
+      const area = document.getElementById('alert-demo');
+
+      area.innerHTML = '';
+
+      const alert = new SuccessAlert('Produto salvo com sucesso.');
+
+      area.appendChild(alert.getView());
+    }
+
+    // ─── Modal Base ───────────────────────
+
+    class ModalBase {
+      constructor() {
+        this.overlay = document.createElement('div');
+        this.overlay.className = 'modal-overlay';
+
+        this.box = document.createElement('div');
+        this.box.className = 'modal-box';
+
+        this.closeBtn = document.createElement('button');
+        this.closeBtn.className = 'modal-close';
+        this.closeBtn.textContent = '×';
+
+        this.closeBtn.addEventListener('click', () => this.close());
+
+        this.overlay.addEventListener('click', (event) => {
+          if (event.target === this.overlay) {
+            this.close();
+          }
+        });
+
+        this.box.appendChild(this.closeBtn);
+        this.overlay.appendChild(this.box);
+
+        document.body.appendChild(this.overlay);
+      }
+
+      open() {
+        this.overlay.classList.add('visible');
+      }
+
+      close() {
+        this.overlay.classList.remove('visible');
+      }
+    }
+
+    class ProductModal extends ModalBase {
+      open(product) {
+        this.box.innerHTML = '';
+
+        this.box.appendChild(this.closeBtn);
+
+        const title = document.createElement('h2');
+        title.textContent = product.title;
+
+        const price = document.createElement('p');
+        price.textContent = product.price;
+
+        this.box.appendChild(title);
+        this.box.appendChild(price);
+
+        super.open();
+      }
+    }
+
+    const productModal = new ProductModal();
+  </script>
+
+</body>
+</html>

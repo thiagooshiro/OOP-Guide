@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOM in Classes — Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 640px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    h1 { font-size: 1.2rem; margin-bottom: 0.25rem; }
+    p.subtitle { color: #666; font-size: 0.9rem; margin-top: 0; margin-bottom: 2rem; }
+
+    section {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    section h2 { font-size: 1rem; margin: 0 0 0.5rem; }
+    section p  { font-size: 0.85rem; color: #555; margin: 0 0 1rem; }
+
+    button {
+      padding: 0.4rem 1rem;
+      border: none;
+      border-radius: 6px;
+      background: #667eea;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    button:hover { background: #5a6fd6; }
+    button + button { margin-left: 0.5rem; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: #222;
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .toast.visible { opacity: 1; pointer-events: auto; }
+
+    /* Dropdown */
+    .dropdown-wrapper { position: relative; display: inline-block; }
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 0.5rem 0;
+      margin-top: 4px;
+      min-width: 160px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: none;
+    }
+    .dropdown-menu.visible { display: block; }
+    .dropdown-menu li { list-style: none; padding: 0.4rem 1rem; font-size: 0.85rem; cursor: pointer; }
+    .dropdown-menu li:hover { background: #f0f0f0; }
+
+    /* UserCard */
+    .user-card {
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      background: #fafafa;
+      min-height: 2rem;
+    }
+    .user-card h2 { margin: 0 0 0.25rem; font-size: 0.95rem; }
+    .user-card p  { margin: 0; color: #555; }
+
+    /* Modal / Notification */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .modal-overlay.visible { display: flex; }
+    .modal-box {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1.5rem;
+      min-width: 280px;
+      position: relative;
+    }
+    .modal-box h2 { margin: 0 0 0.5rem; font-size: 1rem; }
+    .modal-box p  { margin: 0 0 1rem; font-size: 0.85rem; color: #555; }
+    .modal-close {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      cursor: pointer;
+      color: #888;
+      padding: 0;
+    }
+    .modal-close:hover { color: #222; background: none; }
+
+    .notification {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 6px;
+      padding: 0.6rem 0.75rem;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: #3730a3;
+    }
+    .notification button {
+      background: none;
+      color: #3730a3;
+      font-size: 1rem;
+      padding: 0 0.25rem;
+      margin: 0;
+    }
+    .notification button:hover { background: none; color: #1e1b6e; }
+
+    #notification-area { margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <h1>DOM in Classes — Demo</h1>
+  <p class="subtitle">Cada seção demonstra um dos exemplos do guia. Abra o console para acompanhar.</p>
+
+  <!-- Toast -->
+  <section>
+    <h2>Toast</h2>
+    <p>Aparece no canto da tela e some após 2 segundos.</p>
+    <button onclick="showToast()">Mostrar toast</button>
+  </section>
+
+  <!-- Dropdown -->
+  <section>
+    <h2>Dropdown</h2>
+    <p>Abre e fecha uma lista de opções.</p>
+    <div class="dropdown-wrapper">
+      <button onclick="dropdown.open()">Abrir</button>
+      <button onclick="dropdown.close()">Fechar</button>
+      <ul class="dropdown-menu" id="dropdown-menu">
+        <li>Opção 1</li>
+        <li>Opção 2</li>
+        <li>Opção 3</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- UserCard -->
+  <section>
+    <h2>UserCard — limpar e repopular</h2>
+    <p>Renderiza um usuário diferente a cada clique.</p>
+    <button onclick="renderNextUser()">Renderizar próximo usuário</button>
+    <div id="user-card-area"></div>
+  </section>
+
+  <!-- Modal -->
+  <section>
+    <h2>Modal</h2>
+    <p>Abre com conteúdo dinâmico. Feche pelo botão ou clicando fora.</p>
+    <button onclick="modal.open({ title: 'Produto Exemplo', body: 'Aqui entram os detalhes do produto.' })">Abrir modal</button>
+  </section>
+
+  <!-- Notification -->
+  <section>
+    <h2>Notification</h2>
+    <p>Cada clique cria uma nova notificação com botão de fechar.</p>
+    <button onclick="addNotification()">Adicionar notificação</button>
+    <div id="notification-area"></div>
+  </section>
+
+  <script>
+    // ─── Toast ───────────────────────────────────────────────
+    class Toast {
+      constructor(message) {
+        this.element = document.createElement('div');
+        this.element.className = 'toast';
+        this.element.textContent = message;
+        document.body.appendChild(this.element);
+      }
+
+      show() {
+        this.element.classList.add('visible');
+        setTimeout(() => this.hide(), 2000);
+      }
+
+      hide() {
+        this.element.classList.remove('visible');
+      }
+    }
+
+    function showToast() {
+      const toast = new Toast('Salvo com sucesso!');
+      toast.show();
+    }
+
+    // ─── Dropdown ────────────────────────────────────────────
+    class Dropdown {
+      constructor(menuElement) {
+        this.menu = menuElement;
+      }
+
+      open() {
+        this.menu.classList.add('visible');
+      }
+
+      close() {
+        this.menu.classList.remove('visible');
+      }
+    }
+
+    const dropdown = new Dropdown(document.getElementById('dropdown-menu'));
+
+    // ─── UserCard ────────────────────────────────────────────
+    class UserCard {
+      constructor(containerElement) {
+        this.element = document.createElement('div');
+        this.element.className = 'user-card';
+        containerElement.appendChild(this.element);
+      }
+
+      render(user) {
+        this.element.innerHTML = '';
+
+        const name = document.createElement('h2');
+        name.textContent = user.name;
+
+        const email = document.createElement('p');
+        email.textContent = user.email;
+
+        this.element.appendChild(name);
+        this.element.appendChild(email);
+      }
+    }
+
+    const users = [
+      { name: 'Ana Silva', email: 'ana@email.com' },
+      { name: 'Bruno Costa', email: 'bruno@email.com' },
+      { name: 'Carla Dias', email: 'carla@email.com' },
+    ];
+    let userIndex = 0;
+    const userCard = new UserCard(document.getElementById('user-card-area'));
+
+    function renderNextUser() {
+      userCard.render(users[userIndex % users.length]);
+      userIndex++;
+    }
+
+    // ─── Modal ───────────────────────────────────────────────
+    class Modal {
+      constructor() {
+        this.overlay = document.createElement('div');
+        this.overlay.className = 'modal-overlay';
+
+        this.box = document.createElement('div');
+        this.box.className = 'modal-box';
+
+        this.closeBtn = document.createElement('button');
+        this.closeBtn.className = 'modal-close';
+        this.closeBtn.textContent = '×';
+        this.closeBtn.addEventListener('click', () => this.close());
+
+        this.overlay.addEventListener('click', (e) => {
+          if (e.target === this.overlay) this.close();
+        });
+
+        this.box.appendChild(this.closeBtn);
+        this.overlay.appendChild(this.box);
+        document.body.appendChild(this.overlay);
+      }
+
+      open(data) {
+        this.box.innerHTML = '';
+        this.box.appendChild(this.closeBtn);
+
+        const title = document.createElement('h2');
+        title.textContent = data.title;
+
+        const body = document.createElement('p');
+        body.textContent = data.body;
+
+        this.box.appendChild(title);
+        this.box.appendChild(body);
+
+        this.overlay.classList.add('visible');
+      }
+
+      close() {
+        this.overlay.classList.remove('visible');
+      }
+    }
+
+    const modal = new Modal();
+
+    // ─── Notification ─────────────────────────────────────────
+    class Notification {
+      constructor(message, containerElement) {
+        this.element = document.createElement('div');
+        this.element.className = 'notification';
+        this.element.innerHTML = `<span>${message}</span>`;
+
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = '×';
+        closeBtn.addEventListener('click', () => this.dismiss());
+
+        this.element.appendChild(closeBtn);
+        containerElement.appendChild(this.element);
+      }
+
+      dismiss() {
+        this.element.remove();
+      }
+    }
+
+    let notifCount = 0;
+    function addNotification() {
+      notifCount++;
+      new Notification(
+        `Notificação ${notifCount}`,
+        document.getElementById('notification-area')
+      );
+    }
+  </script>
+</body>
+</html>

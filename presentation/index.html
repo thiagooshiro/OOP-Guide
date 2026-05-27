@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>POO na prática</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+
+  <main class="presentation">
+
+    <!-- HERO -->
+    <section class="slide hero">
+      <p class="eyebrow">Programação Orientada a Objetos</p>
+      <h1>POO na prática</h1>
+      <p class="hero-text">
+        Uma introdução honesta: <br>
+        no começo é esquisito, feio e desconfortável. <br>
+        Isso é normal. Continue lendo.
+      </p>
+    </section>
+
+    <!-- O QUE É POO -->
+    <section class="slide">
+      <h2>O que é POO</h2>
+
+      <div class="card">
+        <p>
+          Orientação a Objetos é uma forma de organizar código em torno de <strong>entidades</strong> — objetos que agrupam dados e comportamento num lugar só.
+        </p>
+
+        <p style="margin-top: 1rem;">
+          Em vez de espalhar funções e variáveis pelo código, você cria <strong>classes</strong> que descrevem o que um componente é e o que ele sabe fazer.
+        </p>
+
+        <div class="example-box">
+          Um <code>ProductCard</code> sabe criar seu próprio elemento, preencher seus dados e reagir a cliques — tudo encapsulado numa classe.
+        </div>
+      </div>
+    </section>
+
+    <!-- FUNCTIONAL VS CLASS -->
+    <section class="slide">
+      <h2>Mesmo componente. Duas abordagens.</h2>
+
+      <p style="color: #9ca3af; font-size: 1rem;">
+        Clique em "Fechar" nos dois cards e observe quem toma a decisão.
+      </p>
+
+      <div class="comparison-grid">
+
+        <!-- FUNCTIONAL -->
+        <article class="approach functional">
+          <div class="approach-header">
+            <span class="badge functional-badge">Functional</span>
+            <h3>Componente funcional</h3>
+          </div>
+
+          <div id="functional-demo-area"></div>
+
+          <div class="speech">
+            "Alguém lá fora decide o que acontece comigo."
+          </div>
+
+<pre><code>function createWarningCard(message) {
+  const card = document.createElement('div');
+  card.innerHTML = `
+    &lt;strong&gt;Aviso&lt;/strong&gt;
+    &lt;p&gt;${message}&lt;/p&gt;
+  `;
+  return card;
+}
+
+// comportamento definido fora:
+btn.addEventListener('click', () => {
+  card.style.display = 'none';
+});</code></pre>
+        </article>
+
+        <!-- CLASS -->
+        <article class="approach class-based">
+          <div class="approach-header">
+            <span class="badge class-badge">Class Based</span>
+            <h3>Componente com classe</h3>
+          </div>
+
+          <div id="class-demo-area"></div>
+
+          <div class="speech">
+            "Eu sei o que fazer quando me clicam."
+          </div>
+
+<pre><code>class WarningCard {
+  constructor(message) {
+    this.message = message;
+  }
+
+  close() {
+    this.element.remove();
+  }
+}</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <!-- ENCAPSULATION -->
+    <section class="slide">
+      <h2>Encapsulamento</h2>
+
+      <div class="card">
+        <p>
+          Encapsulamento é o nome técnico pra uma ideia simples: <strong>cada coisa cuida de si mesma</strong>.
+        </p>
+
+        <p style="margin-top: 1rem;">
+          Uma classe bem encapsulada cria sua própria estrutura, controla seus eventos e atualiza sua própria UI. Quem usa a classe não precisa saber como ela funciona por dentro — só precisa saber o que ela oferece.
+        </p>
+
+        <div class="example-box">
+          <code>modal.open(product)</code> — não importa como o modal foi construído. Você chama, ele abre.
+        </div>
+      </div>
+    </section>
+
+    <!-- INHERITANCE -->
+    <section class="slide">
+      <h2>Herança</h2>
+
+      <div class="card card--full">
+        <p>
+          Herança permite que uma classe reuse tudo que outra já tem — e só mude o que precisa ser diferente. Nos exemplos abaixo, a classe filha herda estrutura e comportamento da classe base, sobrescrevendo apenas o visual.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 2.5rem; margin-top: 2rem;">
+
+          <!-- Card vs HighlightedCard -->
+          <div>
+            <p style="margin-bottom: 1rem; color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;">Card vs HighlightedCard</p>
+            <div class="inherit-btn-group">
+              <button class="inherit-btn" onclick="renderCardDemo('normal')">Card comum</button>
+              <button class="inherit-btn" onclick="renderCardDemo('highlighted')">HighlightedCard</button>
+            </div>
+            <div class="inherit-demo-area" id="card-inherit-demo"></div>
+          </div>
+
+          <!-- WarningAlert vs SuccessAlert -->
+          <div>
+            <p style="margin-bottom: 1rem; color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;">Alert → WarningAlert / SuccessAlert</p>
+            <div class="inherit-btn-group">
+              <button class="inherit-btn" onclick="renderAlertDemo('warning')">WarningAlert</button>
+              <button class="inherit-btn" onclick="renderAlertDemo('success')">SuccessAlert</button>
+            </div>
+            <div class="inherit-demo-area" id="alert-inherit-demo"></div>
+          </div>
+
+          <!-- ProductModal -->
+          <div>
+            <p style="margin-bottom: 1rem; color: #9ca3af; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em;">ModalBase → ProductModal</p>
+            <div class="inherit-btn-group">
+              <button class="inherit-btn" onclick="productModal.open({ name: 'Camiseta', price: 'R$ 49,90' })">Abrir ProductModal</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPOSITION -->
+    <section class="slide">
+      <h2>Composição</h2>
+
+      <div class="card architecture">
+        <p>
+          Composição é quando uma classe usa outras classes como peças. Em vez de fazer tudo sozinha, ela delega — cada componente cuida do que é seu, e uma classe orquestradora conecta tudo.
+        </p>
+
+        <div class="tree">
+          <div>App</div>
+          <div class="tree-children">
+            <div>PageContainer</div>
+            <div>SearchBar</div>
+            <div>ProductList</div>
+            <div>ProductModal</div>
+            <div>HighlightedCard</div>
+          </div>
+        </div>
+
+        <p>
+          O <code>App</code> não sabe como o <code>ProductModal</code> foi construído. Só sabe que pode chamar <code>modal.open(product)</code>. Isso é composição funcionando.
+        </p>
+      </div>
+    </section>
+
+    <!-- FINAL -->
+    <section class="slide hero final">
+      <h2>POO é difícil. Isso é normal.</h2>
+      <p class="hero-text">
+        Essa introdução é uma porta de entrada, não uma chegada. <br>
+        Não tem problema se nem tudo fez sentido agora. <br><br>
+        POO matura devagar — com tempo, com prática, <br>
+        e especialmente quando a necessidade bater de verdade: <br>
+        um projeto maior, um teste técnico, código que precisa crescer. <br><br>
+        Por enquanto: entenda o básico e continue caminhando. =)
+      </p>
+    </section>
+
+  </main>
+
+  <script src="./main.js"></script>
+</body>
+</html>

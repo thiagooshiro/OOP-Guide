@@ -1,5 +1,5 @@
 import { fetchRandomMeal, searchMeals, getMockMeal, MOCK_RECIPES } from './api.js';
-import { MealModal, SearchBar } from './components.js';
+import { MealModal, SearchBar, MealCard } from './components.js';
 
 // DOM elements
 const container = document.getElementById('cards-container');

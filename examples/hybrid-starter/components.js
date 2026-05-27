@@ -72,3 +72,39 @@ export class SearchBar {
 }
 
 // NOTE: MealCard class is NOT provided. Students will implement it during live coding.
+export class MealCard {
+  constructor(meal, openModal) {
+    this.meal = meal;
+    this.openModal = openModal
+  }
+
+  getView() {
+    const card = document.createElement('div');
+    card.classList.add('card')
+    
+    const cardImage = document.createElement('img');
+    cardImage.src = `${this.meal.strMealThumb}`
+    cardImage.alt = `${this.meal.strMeal}`
+    
+    const cardInfo = document.createElement('div')
+    cardInfo.classList.add('card-info')
+    
+    const cardTitle = document.createElement('div')
+    cardTitle.classList.add('card-title')
+    cardTitle.textContent = `${this.meal.strMeal || ''} `
+    
+    const cardCategory = document.createElement('div');
+    cardCategory.classList.add('card-category')
+    cardCategory.textContent = `${this.meal.strCategory || ''}`
+    
+    cardInfo.append(cardTitle)
+    cardInfo.append(cardCategory)
+    card.append(cardImage)
+    card.append(cardInfo)
+
+    card.addEventListener('click', this.openModal)
+
+    return card;
+  }
+  
+}
